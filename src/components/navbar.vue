@@ -25,7 +25,6 @@ import logo from '@/assets/logo.png'
 import { ref } from 'vue'
 const emit = defineEmits([
     'onSelect',
-    'onInput'
 ])
 defineProps({
     schema: {
