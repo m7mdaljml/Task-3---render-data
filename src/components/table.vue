@@ -9,7 +9,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in data" :key="item.id">
+                    <tr v-for="item in data.slice(first, end)" :key="item.id">
                         <td v-for="(key, index) in schema" :key="index">{{ item[key] }}</td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm me-2">
@@ -21,7 +21,7 @@
                                         d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
                                 </svg>
                             </button>
-                            <button class="btn btn-outline-danger btn-sm" >
+                            <button class="btn btn-outline-danger btn-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-trash3" viewBox="0 0 16 16">
                                     <path
@@ -34,14 +34,28 @@
             </table>
         </div>
 
-        
+        <ul class="pagination justify-content-center">
+            <li class="page-item" :disabled="end < 10">
+                <span class="page-link" @click="decrement()" >Previous</span>
+            </li>
+            <li class="page-item" v-if="PrevPage != 0"><a class="page-link">{{ PrevPage }}</a></li>
+            <li class="page-item active" aria-current="page">
+                <span class="page-link">{{ CurrPage }}</span>
+            </li>
+            <li class="page-item" ><a class="page-link" >{{ NextPage }}</a></li>
+            <li class="page-item">
+                <a class="page-link" @click="increment()" >Next</a>
+            </li>
+        </ul>
     </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref } from 'vue'
-
-defineProps({
+import { defineProps, ref, computed } from 'vue'
+const PrevPage = ref(0)
+const CurrPage = ref(1)
+const NextPage = ref(2)
+const props = defineProps({
     data: {
         type: Array,
         required: true
@@ -51,9 +65,29 @@ defineProps({
         required: true
     }
 })
+let first = ref(0)
+let end = ref(10)
 
+const increment = () => {
+    if (end.value <= 990) {
+        first.value += 10
+        end.value += 10
+        PrevPage.value++
+        CurrPage.value++
+        NextPage.value++
+
+    }
+}
+const decrement = () => {
+    if (first.value >= 10) {
+        first.value -= 10
+        end.value -= 10
+        PrevPage.value--
+        CurrPage.value--
+        NextPage.value--
+    }
+}
 </script>
-
 <style scoped>
 .table {
     border: 1px solid lightgray;
