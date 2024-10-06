@@ -33,20 +33,36 @@
                 </tbody>
             </table>
         </div>
-
-        <ul class="pagination justify-content-center">
-            <li class="page-item" :disabled="end < 10">
-                <span class="page-link" @click="decrement()" >Previous</span>
-            </li>
-            <li class="page-item" v-if="PrevPage != 0"><a class="page-link">{{ PrevPage }}</a></li>
-            <li class="page-item active" aria-current="page">
-                <span class="page-link">{{ CurrPage }}</span>
-            </li>
-            <li class="page-item" ><a class="page-link" >{{ NextPage }}</a></li>
-            <li class="page-item">
-                <a class="page-link" @click="increment()" >Next</a>
-            </li>
-        </ul>
+        <template v-if="props.data.length > 10">
+            <ul class="pagination justify-content-center gap-2">
+                <li class="page-item" v-if="PrevPage > 0">
+                    <span class="page-link" @click="First()">First</span>
+                </li>
+                <li class="page-item" v-if="PrevPage > 0">
+                    <span class="page-link" @click="decrement(1)">Prev</span>
+                </li>
+                <li class="page-item" @click="decrement(2)" v-if="PrevPage - 1 > 0"><a class="page-link">{{ PrevPage - 1
+                        }}</a>
+                </li>
+                <li class="page-item" @click="decrement(1)" v-if="PrevPage > 0"><a class="page-link">{{ PrevPage }}</a>
+                </li>
+                <li class="page-item-active">
+                    <span class="page-link">{{ CurrPage }}</span>
+                </li>
+                <li class="page-item" @click="increment(1)" v-if="NextPage <= 100"><a class="page-link">{{ NextPage
+                        }}</a>
+                </li>
+                <li class="page-item" @click="increment(2)" v-if="NextPage + 1 <= 100"><a class="page-link">{{ NextPage
+                    + 1
+                        }}</a></li>
+                <li class="page-item">
+                    <a class="page-link" @click="increment(1)" v-if="NextPage <= 100">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" @click="Last()" v-if="NextPage <= 100">Last</a>
+                </li>
+            </ul>
+        </template>
     </div>
 </template>
 
@@ -68,28 +84,60 @@ const props = defineProps({
 let first = ref(0)
 let end = ref(10)
 
-const increment = () => {
-    if (end.value <= 990) {
-        first.value += 10
-        end.value += 10
-        PrevPage.value++
-        CurrPage.value++
-        NextPage.value++
+const increment = (key) => {
+    if (end.value <= props.data.length - 10) {
+        first.value += 10 * key
+        end.value += 10 * key
+        PrevPage.value += key
+        CurrPage.value += key
+        NextPage.value += key
 
     }
 }
-const decrement = () => {
+const decrement = (key) => {
     if (first.value >= 10) {
-        first.value -= 10
-        end.value -= 10
-        PrevPage.value--
-        CurrPage.value--
-        NextPage.value--
+        first.value -= 10 * key
+        end.value -= 10 * key
+        PrevPage.value -= key
+        CurrPage.value -= key
+        NextPage.value -= key
     }
+}
+const First = () => {
+    first.value = 0
+    end.value = 10
+    PrevPage.value = 0
+    CurrPage.value = 1
+    NextPage.value = 2
+}
+const Last = () => {
+    first.value = props.data.length - 10
+    end.value = props.data.length
+    PrevPage.value = Math.floor((props.data.length/10)-1)
+    CurrPage.value = Math.floor((props.data.length)/10)
+    NextPage.value = Math.floor((props.data.length)/10+1)
 }
 </script>
 <style scoped>
+li a,span{
+    background-color: rgba(0, 0, 0, 0.329);
+    color: black;
+}
+.page-item-active span{
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+.page-item-active span:hover,li a:hover,span:hover {
+    background-color: white;
+    border:1px solid black;
+    color: black;
+}
 .table {
     border: 1px solid lightgray;
 }
+a,span{
+    border-radius: 50%;
+    cursor: pointer;
+}
+
 </style>
