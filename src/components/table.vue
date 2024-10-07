@@ -4,12 +4,14 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        
                         <th v-for="(key, index) in schema" :key="index">{{ key }}</th>
                         <th colspan="2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in data.slice(first, end)" :key="item.id">
+                        
                         <td v-for="(key, index) in schema" :key="index">{{ item[key] }}</td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm me-2">
@@ -33,6 +35,7 @@
                 </tbody>
             </table>
         </div>
+          
         <template v-if="props.data.length > 10">
             <ul class="pagination justify-content-center gap-2">
                 <li class="page-item" v-if="PrevPage > 0">
@@ -41,21 +44,20 @@
                 <li class="page-item" v-if="PrevPage > 0">
                     <span class="page-link" @click="decrement(1)">Prev</span>
                 </li>
-                <li class="page-item" @click="decrement(2)" v-if="PrevPage - 1 > 0"><a class="page-link">{{ PrevPage - 1
-                        }}</a>
+                <template v-for="i in [...Array(Math.floor(numOfPagination / 2)).keys()].reverse()" :key="i">
+                <li class="page-item" @click="decrement(i+1)" v-if="(PrevPage - (i))>0">
+                    <a class="page-link">{{ PrevPage - (i) }}</a>
                 </li>
-                <li class="page-item" @click="decrement(1)" v-if="PrevPage > 0"><a class="page-link">{{ PrevPage }}</a>
-                </li>
+                </template>
                 <li class="page-item-active">
-                    <span class="page-link">{{ CurrPage }}</span>
+                    <span class="page-link">{{ CurrPage }}</span> 
                 </li>
-                <li class="page-item" @click="increment(1)" v-if="NextPage <= 100"><a class="page-link">{{ NextPage
-                        }}</a>
+                <template v-for="i in Math.floor(numOfPagination / 2)-1" :key="i">
+                <li class="page-item" @click="increment(i)" v-if="NextPage + 1 <= 100-i+2">
+                    <a class="page-link">{{ NextPage+(i-1) }}</a>
                 </li>
-                <li class="page-item" @click="increment(2)" v-if="NextPage + 1 <= 100"><a class="page-link">{{ NextPage
-                    + 1
-                        }}</a></li>
-                <li class="page-item">
+                </template>
+                <li class="page-item" v-if="NextPage  <= 100">
                     <a class="page-link" @click="increment(1)" v-if="NextPage <= 100">Next</a>
                 </li>
                 <li class="page-item">
@@ -71,6 +73,10 @@ import { defineProps, ref, computed } from 'vue'
 const PrevPage = ref(0)
 const CurrPage = ref(1)
 const NextPage = ref(2)
+const first = ref(0)
+const end = ref(10)
+const numOfPagination = ref(10)
+const Flag = ref(false)
 const props = defineProps({
     data: {
         type: Array,
@@ -81,8 +87,7 @@ const props = defineProps({
         required: true
     }
 })
-let first = ref(0)
-let end = ref(10)
+
 
 const increment = (key) => {
     if (end.value <= props.data.length - 10) {
@@ -113,31 +118,40 @@ const First = () => {
 const Last = () => {
     first.value = props.data.length - 10
     end.value = props.data.length
-    PrevPage.value = Math.floor((props.data.length/10)-1)
-    CurrPage.value = Math.floor((props.data.length)/10)
-    NextPage.value = Math.floor((props.data.length)/10+1)
+    PrevPage.value = Math.floor((props.data.length / 10) - 1)
+    CurrPage.value = Math.floor((props.data.length) / 10)
+    NextPage.value = Math.floor((props.data.length) / 10 + 1)
 }
 </script>
+
 <style scoped>
-li a,span{
+li a,
+span {
     background-color: rgba(0, 0, 0, 0.329);
     color: black;
 }
-.page-item-active span{
+
+.page-item-active span {
     background-color: rgb(0, 0, 0);
     color: white;
 }
-.page-item-active span:hover,li a:hover,span:hover {
+
+.page-item-active span:hover,
+li a:hover,
+span:hover {
     background-color: white;
-    border:1px solid black;
+    border: 1px solid black;
     color: black;
+    user-select: none;
 }
+
 .table {
     border: 1px solid lightgray;
 }
-a,span{
+
+a,
+span {
     border-radius: 50%;
     cursor: pointer;
 }
-
 </style>
