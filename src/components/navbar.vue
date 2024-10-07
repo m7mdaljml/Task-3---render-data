@@ -23,6 +23,7 @@
         </div>
     </div>
 </template>
+
 <script setup>
 import logo from '@/assets/logo.png'
 import { ref } from 'vue'
