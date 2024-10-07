@@ -28,8 +28,6 @@
 import logo from '@/assets/logo.png'
 import { ref } from 'vue'
 
-const text = ref('')
-const key = ref('')
 const emit = defineEmits([
     'onSelect',
     'onInput'
@@ -41,6 +39,8 @@ defineProps({
     }
 })
 
+const text = ref('')
+const key = ref('')
 
 </script>
 <style scoped>

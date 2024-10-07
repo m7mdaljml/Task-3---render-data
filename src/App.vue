@@ -1,6 +1,6 @@
 <template>
-  <v-navbar :schema="schema" @onSelect="ChangeData" @onInput="SelectUser"/>
-  <v-table :data="SearchResult" :schema="schema" @Delete="DeleteSelected"/>
+  <v-navbar :schema="schema" @onselect="changeData" @onInput="selectUser"/>
+  <v-table :data="searchResult" :schema="schema" @Delete="deleteSelected"/>
   <table></table>
 </template>
 
@@ -9,40 +9,51 @@ import { ref, computed, onMounted } from 'vue'
 import VTable from '@/components/table.vue'
 import VNavbar from '@/components/navbar.vue'
 import axios from 'axios'
-/**/
-const Cars = ref([])
-const CarSchema = ref(['id', 'car_make', 'car_model_year', 'car_vin'])
-const Employees = ref([])
-const EmpSchema = ref(['id', 'first_name', 'last_name', 'email', 'gender', 'ip_address'])
+
+const cars = ref([])
+const carSchema = ref(['id', 'car_make', 'car_model_year', 'car_vin'])
+const employees = ref([])
+const empSchema = ref(['id', 'first_name', 'last_name', 'email', 'gender', 'ip_address'])
 const data = ref([])
 const schema = ref([])
-const SearchValue = ref('')
-const SearchKey = ref('')
+const searchValue = ref('')
+const searchKey = ref('')
+
+const searchResult = computed(() => {
+  if (!searchValue.value) {
+    return data.value
+  }
+  else{
+    return data.value.filter(item =>
+      string(item[searchKey.value]).toLowercase().includes(searchValue.value)
+    )
+  }
+})
 
 const GetData = async () => {
   try {
-    const CarRes = await axios.get('cars.json')
-    Cars.value = CarRes.data
-    const EmployeesRes = await axios.get('employees.json')
-    Employees.value = EmployeesRes.data
+    const carRes = await axios.get('cars.json')
+    cars.value = carRes.data
+    const employeesRes = await axios.get('employees.json')
+    employees.value = employeesRes.data
 
-    data.value = Employees.value
-    schema.value = EmpSchema.value
+    data.value = employees.value
+    schema.value = empSchema.value
   } catch (err) {
     console.log(err)
   }
 }
 
-const ChangeData = (obj) => {
-  if (obj.data === 'Employees') {
-    data.value = Employees.value
-    schema.value = EmpSchema.value
-  } else if (obj.data === 'Cars') {
-    data.value = Cars.value
-    schema.value = CarSchema.value
+const changeData = (obj) => {
+  if (obj.data === 'employees') {
+    data.value = employees.value
+    schema.value = empSchema.value
+  } else if (obj.data === 'cars') {
+    data.value = cars.value
+    schema.value = carSchema.value
   }
 }
-const DeleteSelected = (arr) => {
+const deleteSelected = (arr) => {
   if(arr.length > 0){
     const confirmVal = confirm("Are you sure to delete selected Items ?")
     if(confirmVal){
@@ -50,24 +61,13 @@ const DeleteSelected = (arr) => {
     }
   }
 }
-const SelectUser = (text,key) => {
-  SearchValue.value = text.toLowerCase()
+const selectUser = (text,key) => {
+  searchValue.value = text.toLowercase()
   if(!key)
-  SearchKey.value = 'id'
+  searchKey.value = 'id'
   else
-  SearchKey.value = key
+  searchKey.value = key
 }
-
-const SearchResult = computed(() => {
-  if (!SearchValue.value) {
-    return data.value
-  }
-  else{
-    return data.value.filter(item =>
-      String(item[SearchKey.value]).toLowerCase().includes(SearchValue.value)
-    )
-  }
-})
 
 onMounted(async () => {
   await GetData()

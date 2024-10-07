@@ -4,7 +4,6 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        
                         <th v-for="(key, index) in schema" :key="index">{{ key }}</th>
                         <th colspan="2">Action</th>
                     </tr>
@@ -35,8 +34,7 @@
                 </tbody>
             </table>
         </div>
-          
-          
+
         <template v-if="props.data.length > 10">
             <ul class="pagination justify-content-center gap-2">
                 <li class="page-item" v-if="PrevPage > 0">
@@ -71,13 +69,7 @@
 
 <script setup lang="ts">
 import { defineProps, ref, computed } from 'vue'
-const PrevPage = ref(0)
-const CurrPage = ref(1)
-const NextPage = ref(2)
-const first = ref(0)
-const end = ref(10)
-const numOfPagination = ref(10)
-const Flag = ref(false)
+
 const props = defineProps({
     data: {
         type: Array,
@@ -89,6 +81,13 @@ const props = defineProps({
     }
 })
 
+const PrevPage = ref(0)
+const CurrPage = ref(1)
+const NextPage = ref(2)
+const first = ref(0)
+const end = ref(10)
+const numOfPagination = ref(10)
+const Flag = ref(false)
 
 const increment = (key) => {
     if (end.value <= props.data.length - 10) {
