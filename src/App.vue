@@ -25,7 +25,7 @@ const searchResult = computed(() => {
   }
   else{
     return data.value.filter(item =>
-      string(item[searchKey.value]).toLowercase().includes(searchValue.value)
+      String(item[searchKey.value]).toLowerCase().includes(searchValue.value)
     )
   }
 })
@@ -62,7 +62,7 @@ const deleteSelected = (arr) => {
   }
 }
 const selectUser = (text,key) => {
-  searchValue.value = text.toLowercase()
+  searchValue.value = text.toLowerCase()
   if(!key)
   searchKey.value = 'id'
   else
