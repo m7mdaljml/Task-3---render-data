@@ -30,11 +30,11 @@ const searchResult = computed(() => {
   }
 })
 
-const GetData = async () => {
+const getData = async () => {
   try {
-    const carRes = await axios.get('cars.json')
+    const carRes = await axios.get('/cars.json')
     cars.value = carRes.data
-    const employeesRes = await axios.get('employees.json')
+    const employeesRes = await axios.get('/employees.json')
     employees.value = employeesRes.data
 
     data.value = employees.value
@@ -70,7 +70,7 @@ const selectUser = (text,key) => {
 }
 
 onMounted(async () => {
-  await GetData()
+  await getData()
 })
 </script>
 

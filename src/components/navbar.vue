@@ -6,18 +6,20 @@
                         class="logo" :src="logo"></a>
             </div>
             <div class="col-md-4">
-                <select class="form-select" @change="event => $emit('onSelect', JSON.parse(event.target.value))">
-                    <option value='{"data":"Employees", "schema":"EmpSchema"}'>Employees</option>
-                    <option value='{"data":"Cars", "schema":"CarSchema"}'>Cars</option>
+                <select class="form-select" @change="event => $emit('onselect', JSON.parse(event.target.value))">
+                    <option value='{"data":"employees", "schema":"empSchema"}'>Employees</option>
+                    <option value='{"data":"cars", "schema":"carSchema"}'>Cars</option>
                 </select>
             </div>
+
             <div class="col-md-4">
                 <div class="input-group mb-4">
                     <select class="form-select" v-model="key">
-                    <option value="">Select</option>
+                        <option value="">Select</option>
                         <option v-for="(key, index) in schema" :key="index" :selected="key == 'id'">{{ key }}</option>
                     </select>
-                    <input v-model="text" type="text" class="form-control" placeholder="Search record" @input="$emit('onInput',text,key)">
+                    <input v-model="text" type="text" class="form-control" placeholder="Search record"
+                        @input="$emit('onInput', text, key)">
                 </div>
             </div>
         </div>
@@ -47,7 +49,8 @@ const key = ref('')
 .col-md-3 {
     align-content: center;
 }
-.form-control{
-    width:40%;
+
+.form-control {
+    width: 40%;
 }
 </style>
