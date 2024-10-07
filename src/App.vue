@@ -1,7 +1,7 @@
 <template>
-  <v-navbar @onSelect="ChangeData"/>
-  <v-table :data="data" :schema="schema" />
-  
+  <v-navbar :schema="schema" @onSelect="ChangeData" @onInput="SelectUser"/>
+  <v-table :data="SearchResult" :schema="schema" @Delete="DeleteSelected"/>
+  <table></table>
 </template>
 
 <script setup lang="ts">
@@ -16,6 +16,8 @@ const Employees = ref([])
 const EmpSchema = ref(['id', 'first_name', 'last_name', 'email', 'gender', 'ip_address'])
 const data = ref([])
 const schema = ref([])
+const SearchValue = ref('')
+const SearchKey = ref('')
 
 const GetData = async () => {
   try {
@@ -40,6 +42,33 @@ const ChangeData = (obj) => {
     schema.value = CarSchema.value
   }
 }
+const DeleteSelected = (arr) => {
+  if(arr.length > 0){
+    const confirmVal = confirm("Are you sure to delete selected Items ?")
+    if(confirmVal){
+      data.value = data.value.filter((item) => !arr.includes(item.id));
+    }
+  }
+}
+const SelectUser = (text,key) => {
+  SearchValue.value = text.toLowerCase()
+  if(!key)
+  SearchKey.value = 'id'
+  else
+  SearchKey.value = key
+}
+
+const SearchResult = computed(() => {
+  if (!SearchValue.value) {
+    return data.value
+  }
+  else{
+    return data.value.filter(item =>
+      String(item[SearchKey.value]).toLowerCase().includes(SearchValue.value)
+    )
+  }
+})
+
 onMounted(async () => {
   await GetData()
 })
