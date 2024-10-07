@@ -1,5 +1,4 @@
 <template>
-
     <div class="container-fluid" style="background-color: lightgray;padding:10px;">
         <div class="row mb-3">
             <div class="col-md-4">
@@ -14,7 +13,11 @@
             </div>
             <div class="col-md-4">
                 <div class="input-group mb-4">
-                    <input type="text" class="form-control" placeholder="Search record">
+                    <select class="form-select" v-model="key">
+                    <option value="">Select</option>
+                        <option v-for="(key, index) in schema" :key="index" :selected="key == 'id'">{{ key }}</option>
+                    </select>
+                    <input v-model="text" type="text" class="form-control" placeholder="Search record" @input="$emit('onInput',text,key)">
                 </div>
             </div>
         </div>
@@ -23,8 +26,12 @@
 <script setup>
 import logo from '@/assets/logo.png'
 import { ref } from 'vue'
+
+const text = ref('')
+const key = ref('')
 const emit = defineEmits([
     'onSelect',
+    'onInput'
 ])
 defineProps({
     schema: {
@@ -32,6 +39,8 @@ defineProps({
         required: true
     }
 })
+
+
 </script>
 <style scoped>
 .col-md-3 {
